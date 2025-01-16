@@ -2,13 +2,23 @@
 
 A VS Code extension that plays a sound notification when you stop typing in Cursor's composer window.
 
+## Why?
+
+Cursor's Composer / Chat is awesome, but I found it pretty hard to keep track of when long-running updates (especially in agent mode!) were completing. So I made this simple extension that adds some feedback for when there's an "Accept Change" prompt.
+
+## Caveats
+
+This is pretty jank due to VS Code's extension security model and the lack of a way to detect when Cursor's composer is open. In lieu of this, we're just looking at change events on the chat / composer's code blocks. It's not 100% reliable, but it gets the job done.
+
+Hoping that Cursor adds this feature natively soon!
+
 ## Features
 
-- Plays a configurable sound when you stop typing in Cursor's composer
+- Plays a sound when you stop typing in Cursor's composer
 - Customizable delay time
 - Multiple sound options
 - Adjustable volume
-- Works on macOS, Windows, and Linux
+- Works on macOS, Windows, and Linux (untested on the latter two)
 
 ## Installation
 
@@ -23,7 +33,7 @@ A VS Code extension that plays a sound notification when you stop typing in Curs
 This extension can be configured through VS Code settings:
 
 - `composerBeep.enabled`: Enable or disable the beep sound (default: true)
-- `composerBeep.delayMs`: Delay in milliseconds before playing sound (default: 1000)
+- `composerBeep.delayMs`: Delay in milliseconds before playing sound (default: 3000)
 - `composerBeep.soundFile`: Choose the notification sound:
   - notification-bloop.wav
   - notification-click.wav
@@ -38,13 +48,7 @@ This extension can be configured through VS Code settings:
 
 ## Requirements
 
-- VS Code 1.85.0 or higher
-- Cursor installed
-
-## Known Issues
-
-- Volume control is not supported on Windows
-- Some Linux distributions might require `paplay` or `aplay` to be installed
+- Cursor
 
 ## Release Notes
 
@@ -53,8 +57,6 @@ This extension can be configured through VS Code settings:
 Initial release:
 
 - Basic sound notification functionality
-- Configurable delay and sound options
-- Volume control (macOS and Linux)
 
 ## Development
 
