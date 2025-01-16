@@ -1,0 +1,96 @@
+{
+  "name": "composer-boop",
+  "displayName": "Composer Boop",
+  "description": "VS Code extension to add feedback to Cursor composer",
+  "version": "0.0.1",
+  "publisher": "outrageouslyfrench",
+  "license": "MIT",
+  "icon": "booplogo-sm.png",
+  "author": {
+    "name": "Joel Lanciaux"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joellanciaux/composer-boop-plugin"
+  },
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "cursor",
+    "sound",
+    "notification",
+    "composer"
+  ],
+  "activationEvents": [
+    "onCustomEditor:composer-code-block-anysphere",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Composer Boop",
+      "properties": {
+        "composerBoop.delayMs": {
+          "type": "number",
+          "default": 3000,
+          "minimum": 100,
+          "maximum": 10000,
+          "description": "Delay in milliseconds before playing the sound after typing stops"
+        },
+        "composerBoop.soundFile": {
+          "type": "string",
+          "default": "notification-bloop.wav",
+          "enum": [
+            "notification-bloop.wav",
+            "notification-ding.wav",
+            "notification-pop.wav"
+          ],
+          "description": "Sound file to play (from the included sounds)"
+        },
+        "composerBoop.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the boop sound"
+        },
+        "composerBoop.volume": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Volume of the boop sound (0.0 to 1.0)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src/**/*.ts",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.7",
+    "@types/vscode": "^1.93.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "@vscode/vsce": "^3.2.1",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "typescript": "^5.7.3"
+  },
+  "files": [
+    "out/**/*",
+    "media/**/*",
+    "booplogo-sm.png",
+    "LICENSE.md"
+  ]
+}
