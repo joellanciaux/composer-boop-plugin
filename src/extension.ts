@@ -8,7 +8,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Create an output channel for logging
   const outputChannel = vscode.window.createOutputChannel("Composer Beep");
-  outputChannel.show();
+
+  // Only show output channel when debugging
+  if (process.env.VSCODE_DEBUG_MODE === "true") {
+    outputChannel.show();
+  }
+
   outputChannel.appendLine("Composer Beep started");
 
   // Helper function to check if document is a composer code block

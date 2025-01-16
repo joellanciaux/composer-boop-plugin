@@ -3,7 +3,11 @@
   "displayName": "Composer Beep",
   "description": "VS Code extension to interact with Cursor composer text box",
   "version": "0.0.1",
-  "publisher": "your-publisher-name",
+  "publisher": "joellanciaux",
+  "license": "MIT",
+  "author": {
+    "name": "Joel Lanciaux"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/yourusername/cursor-beep"
