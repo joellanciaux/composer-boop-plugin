@@ -3,23 +3,57 @@ import * as vscode from "vscode";
 export function activate(context: vscode.ExtensionContext) {
   console.log("Cursor Beep extension is now active");
 
-  let disposable = vscode.commands.registerCommand(
+  // Log all available commands
+  vscode.commands.getCommands(true).then((commands) => {
+    console.log(
+      "Available commands:",
+      commands.filter((cmd) => cmd.includes("cursor"))
+    );
+  });
+
+  // Register a command to try to accept changes
+  let acceptCommand = vscode.commands.registerCommand(
+    "cursor-beep.accept",
+    async () => {
+      try {
+        // Try different possible command IDs that Cursor might use
+        const possibleCommands = [
+          "cursor.acceptChanges",
+          "cursor.accept",
+          "cursorAccept",
+          "acceptChanges",
+        ];
+
+        for (const cmd of possibleCommands) {
+          try {
+            await vscode.commands.executeCommand(cmd);
+            console.log(`Successfully executed command: ${cmd}`);
+          } catch (e) {
+            console.log(`Failed to execute command: ${cmd}`, e);
+          }
+        }
+      } catch (error) {
+        console.error("Error executing accept command:", error);
+      }
+    }
+  );
+
+  // Watch for command execution
+  let cmdListener = vscode.commands.registerCommand("*", (command) => {
+    if (command.includes("cursor") || command.includes("accept")) {
+      console.log("Intercepted command:", command);
+    }
+  });
+
+  // Original interact command
+  let interactCommand = vscode.commands.registerCommand(
     "cursor-beep.interact",
     () => {
-      // Get the active text editor
       const editor = vscode.window.activeTextEditor;
-
       if (editor) {
-        // Get the current cursor position
         const position = editor.selection.active;
-
-        // Get the current line text
         const line = editor.document.lineAt(position.line);
-
-        // Show a message with the current line text
         vscode.window.showInformationMessage(`Current line: ${line.text}`);
-
-        // Insert some text at the cursor position
         editor.edit((editBuilder) => {
           editBuilder.insert(position, "🎵");
         });
@@ -29,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(acceptCommand, cmdListener, interactCommand);
 }
 
 export function deactivate() {}

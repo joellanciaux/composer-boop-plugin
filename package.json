@@ -9,13 +9,27 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "cursor-beep.interact",
         "title": "Interact with Cursor Composer"
+      },
+      {
+        "command": "cursor-beep.accept",
+        "title": "Accept Cursor Changes"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "cursor-beep.accept",
+        "key": "cmd+y",
+        "mac": "cmd+y",
+        "when": "editorTextFocus"
       }
     ]
   },
