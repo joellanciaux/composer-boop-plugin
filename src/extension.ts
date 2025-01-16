@@ -4,17 +4,17 @@ import { exec } from "child_process";
 import { platform } from "os";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Composer Beep extension is now active");
+  console.log("Composer Boop extension is now active");
 
   // Create an output channel for logging
-  const outputChannel = vscode.window.createOutputChannel("Composer Beep");
+  const outputChannel = vscode.window.createOutputChannel("Composer Boop");
 
   // Only show output channel when debugging
   if (process.env.VSCODE_DEBUG_MODE === "true") {
     outputChannel.show();
   }
 
-  outputChannel.appendLine("Composer Beep started");
+  outputChannel.appendLine("Composer Boop started");
 
   // Helper function to check if document is a composer code block
   function isComposerCodeBlock(doc: vscode.TextDocument): boolean {
@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Helper function to get current configuration
   function getConfig() {
-    const config = vscode.workspace.getConfiguration("composerBeep");
+    const config = vscode.workspace.getConfiguration("composerBoop");
     return {
       enabled: config.get<boolean>("enabled", true),
       delayMs: config.get<number>("delayMs", 3000),
@@ -36,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
   let debounceTimer: NodeJS.Timeout | undefined;
 
   // Function to play sound using system audio
-  async function playBeep() {
+  async function playBoop() {
     const config = getConfig();
     if (!config.enabled) {
-      outputChannel.appendLine("Beep is disabled in settings");
+      outputChannel.appendLine("Boop is disabled in settings");
       return;
     }
 
@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
           outputChannel.appendLine(
             `No changes for ${delayMs}ms - Playing sound`
           );
-          playBeep().catch((error) => {
+          playBoop().catch((error) => {
             outputChannel.appendLine(`Failed to play sound: ${error.message}`);
           });
         }, delayMs);
@@ -112,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Monitor configuration changes
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration("composerBeep")) {
+      if (event.affectsConfiguration("composerBoop")) {
         const config = getConfig();
         outputChannel.appendLine("\n=== Configuration Changed ===");
         outputChannel.appendLine(`- Enabled: ${config.enabled}`);

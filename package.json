@@ -1,16 +1,17 @@
 {
-  "name": "composer-beep",
-  "displayName": "Composer Beep",
+  "name": "composer-boop",
+  "displayName": "Composer Boop",
   "description": "VS Code extension to add feedback to Cursor composer",
   "version": "0.0.1",
   "publisher": "joellanciaux",
   "license": "MIT",
+  "icon": "booplogo-sm.png",
   "author": {
     "name": "Joel Lanciaux"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joellanciaux/composer-beep-plugin"
+    "url": "https://github.com/joellanciaux/composer-boop-plugin"
   },
   "engines": {
     "vscode": "^1.93.0"
@@ -31,16 +32,16 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Composer Beep",
+      "title": "Composer Boop",
       "properties": {
-        "composerBeep.delayMs": {
+        "composerBoop.delayMs": {
           "type": "number",
           "default": 3000,
           "minimum": 100,
           "maximum": 10000,
           "description": "Delay in milliseconds before playing the sound after typing stops"
         },
-        "composerBeep.soundFile": {
+        "composerBoop.soundFile": {
           "type": "string",
           "default": "notification-bloop.wav",
           "enum": [
@@ -50,17 +51,17 @@
           ],
           "description": "Sound file to play (from the included sounds)"
         },
-        "composerBeep.enabled": {
+        "composerBoop.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable or disable the beep sound"
+          "description": "Enable or disable the boop sound"
         },
-        "composerBeep.volume": {
+        "composerBoop.volume": {
           "type": "number",
           "default": 1,
           "minimum": 0,
           "maximum": 1,
-          "description": "Volume of the beep sound (0.0 to 1.0)"
+          "description": "Volume of the boop sound (0.0 to 1.0)"
         }
       }
     }

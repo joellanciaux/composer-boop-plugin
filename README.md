@@ -1,4 +1,8 @@
-# Composer Beep
+<div align="center">
+  <img src="booplogo-sm.png" alt="Composer Boop Logo" width="128" height="128">
+</div>
+
+# Composer Boop
 
 A VS Code extension that plays a sound notification when you stop typing in Cursor's composer window.
 
@@ -32,13 +36,13 @@ Hoping that Cursor adds this feature natively soon!
 
 This extension can be configured through VS Code settings:
 
-- `composerBeep.enabled`: Enable or disable the beep sound (default: true)
-- `composerBeep.delayMs`: Delay in milliseconds before playing sound (default: 3000)
-- `composerBeep.soundFile`: Choose the notification sound:
+- `composerBoop.enabled`: Enable or disable the boop sound (default: true)
+- `composerBoop.delayMs`: Delay in milliseconds before playing sound (default: 3000)
+- `composerBoop.soundFile`: Choose the notification sound:
   - notification-bloop.wav
   - notification-click.wav
   - notification-pop.wav
-- `composerBeep.volume`: Adjust sound volume from 0.0 to 1.0 (default: 1.0)
+- `composerBoop.volume`: Adjust sound volume from 0.0 to 1.0 (default: 1.0)
 
 ## Usage
 
