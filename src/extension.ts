@@ -3,12 +3,15 @@ import * as vscode from "vscode";
 export function activate(context: vscode.ExtensionContext) {
   console.log("Cursor Beep extension is now active");
 
+  vscode.window.showInformationMessage("Cursor Beep extension is now active");
+
   // Log all available commands
   vscode.commands.getCommands(true).then((commands) => {
     console.log(
       "Available commands:",
-      commands.filter((cmd) => cmd.includes("cursor"))
+      commands.filter((cmd) => cmd.includes("cursorai"))
     );
+    console.log("^^^^^", commands.length);
   });
 
   // Register a command to try to accept changes
