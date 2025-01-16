@@ -1,6 +1,6 @@
 {
-  "name": "cursor-beep",
-  "displayName": "Cursor Beep",
+  "name": "composer-beep",
+  "displayName": "Composer Beep",
   "description": "VS Code extension to interact with Cursor composer text box",
   "version": "0.0.1",
   "engines": {

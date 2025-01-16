@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Cursor Beep extension is now active");
+  console.log("Composer Beep extension is now active");
 
   // Create an output channel for logging
   const outputChannel = vscode.window.createOutputChannel("Cursor Monitor");
