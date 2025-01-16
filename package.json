@@ -21,7 +21,8 @@
     "composer"
   ],
   "activationEvents": [
-    "*"
+    "onCustomEditor:composer-code-block-anysphere",
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
