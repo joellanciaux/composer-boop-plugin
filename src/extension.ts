@@ -16,28 +16,49 @@ export function activate(context: vscode.ExtensionContext) {
     return doc.uri.scheme === "composer-code-block-anysphere";
   }
 
+  // Helper function to get current configuration
+  function getConfig() {
+    const config = vscode.workspace.getConfiguration("composerBeep");
+    return {
+      enabled: config.get<boolean>("enabled", true),
+      delayMs: config.get<number>("delayMs", 1000),
+      soundFile: config.get<string>("soundFile", "notification-bloop.wav"),
+      volume: config.get<number>("volume", 1.0),
+    };
+  }
+
   // Create a debounced timer
   let debounceTimer: NodeJS.Timeout | undefined;
 
   // Function to play sound using system audio
   async function playBeep() {
+    const config = getConfig();
+    if (!config.enabled) {
+      outputChannel.appendLine("Beep is disabled in settings");
+      return;
+    }
+
     const soundFilePath = path.join(
       context.extensionPath,
       "media",
-      "notification-bloop.wav"
+      config.soundFile
     );
 
     // Different commands for different operating systems
     let command = "";
     switch (platform()) {
       case "darwin":
-        command = `afplay "${soundFilePath}"`;
+        // On macOS, afplay supports volume control (0 to 255)
+        const macVolume = Math.floor(config.volume * 255);
+        command = `afplay -v ${macVolume / 255} "${soundFilePath}"`;
         break;
       case "win32":
         command = `powershell -c (New-Object Media.SoundPlayer '${soundFilePath}').PlaySync()`;
         break;
       default: // Linux
-        command = `paplay "${soundFilePath}" || aplay "${soundFilePath}"`;
+        // On Linux, paplay supports volume (0 to 65536)
+        const linuxVolume = Math.floor(config.volume * 65536);
+        command = `paplay --volume=${linuxVolume} "${soundFilePath}" || aplay "${soundFilePath}"`;
         break;
     }
 
@@ -66,13 +87,30 @@ export function activate(context: vscode.ExtensionContext) {
           clearTimeout(debounceTimer);
         }
 
+        // Get current delay from settings
+        const { delayMs } = getConfig();
+
         // Set new timer
         debounceTimer = setTimeout(() => {
-          outputChannel.appendLine("No changes for 1 second - Playing sound");
+          outputChannel.appendLine(
+            `No changes for ${delayMs}ms - Playing sound`
+          );
           playBeep().catch((error) => {
             outputChannel.appendLine(`Failed to play sound: ${error.message}`);
           });
-        }, 1000);
+        }, delayMs);
+      }
+    }),
+
+    // Monitor configuration changes
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration("composerBeep")) {
+        const config = getConfig();
+        outputChannel.appendLine("\n=== Configuration Changed ===");
+        outputChannel.appendLine(`- Enabled: ${config.enabled}`);
+        outputChannel.appendLine(`- Delay: ${config.delayMs}ms`);
+        outputChannel.appendLine(`- Sound: ${config.soundFile}`);
+        outputChannel.appendLine(`- Volume: ${config.volume}`);
       }
     })
   );
