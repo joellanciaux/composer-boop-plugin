@@ -1,4 +1,7 @@
 import * as vscode from "vscode";
+import * as path from "path";
+import { exec } from "child_process";
+import { platform } from "os";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Composer Beep extension is now active");
@@ -16,15 +19,38 @@ export function activate(context: vscode.ExtensionContext) {
   // Create a debounced timer
   let debounceTimer: NodeJS.Timeout | undefined;
 
-  // Function to play sound using the terminal
+  // Function to play sound using system audio
   async function playBeep() {
-    // Use the terminal bell character to make a sound
-    const terminal =
-      vscode.window.terminals[0] ||
-      (await vscode.window.createTerminal("beep"));
-    terminal.sendText("\u0007", false); // Send bell character
-    // Hide the terminal after beeping
-    terminal.hide();
+    const soundFilePath = path.join(
+      context.extensionPath,
+      "media",
+      "notification-bloop.wav"
+    );
+
+    // Different commands for different operating systems
+    let command = "";
+    switch (platform()) {
+      case "darwin":
+        command = `afplay "${soundFilePath}"`;
+        break;
+      case "win32":
+        command = `powershell -c (New-Object Media.SoundPlayer '${soundFilePath}').PlaySync()`;
+        break;
+      default: // Linux
+        command = `paplay "${soundFilePath}" || aplay "${soundFilePath}"`;
+        break;
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      exec(command, (error) => {
+        if (error) {
+          outputChannel.appendLine(`Error playing sound: ${error.message}`);
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   // Monitor text document changes
@@ -43,7 +69,9 @@ export function activate(context: vscode.ExtensionContext) {
         // Set new timer
         debounceTimer = setTimeout(() => {
           outputChannel.appendLine("No changes for 1 second - Playing sound");
-          playBeep();
+          playBeep().catch((error) => {
+            outputChannel.appendLine(`Failed to play sound: ${error.message}`);
+          });
         }, 1000);
       }
     })
