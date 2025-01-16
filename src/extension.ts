@@ -4,76 +4,119 @@ export function activate(context: vscode.ExtensionContext) {
   console.log("Composer Beep extension is now active");
 
   // Create an output channel for logging
-  const outputChannel = vscode.window.createOutputChannel("Cursor Monitor");
+  const outputChannel = vscode.window.createOutputChannel("Composer Beep");
   outputChannel.show();
-  outputChannel.appendLine("Cursor Monitor started");
+  outputChannel.appendLine("Composer Beep started");
 
-  // Helper function to check if this is a Cursor composer document
-  function isComposerDocument(doc: vscode.TextDocument): boolean {
-    return doc.uri.scheme === "composer-code-block-anysphere";
+  // Helper function to check if document is Anysphere-related
+  function isAnysphereDocument(doc: vscode.TextDocument): boolean {
+    const uri = doc.uri.toString().toLowerCase();
+    const scheme = doc.uri.scheme.toLowerCase();
+    const content = doc.getText().toLowerCase();
+
+    if (doc.languageId === "Log") {
+      console.log("Skipping log document");
+      return false;
+    }
+
+    return (
+      scheme.includes("anysphere") ||
+      uri.includes("anysphere") ||
+      content.includes("anysphere") ||
+      scheme.includes("cursor") ||
+      content.includes("cursor")
+    );
   }
 
   // Monitor text document changes
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((event) => {
       const doc = event.document;
-      if (isComposerDocument(doc)) {
-        outputChannel.appendLine(`\n=== Composer Document Changed ===`);
+      if (isAnysphereDocument(doc)) {
+        outputChannel.appendLine(`\n=== Anysphere Document Changed ===`);
         outputChannel.appendLine(`- URI: ${doc.uri.toString()}`);
-        outputChannel.appendLine(`- Language: ${doc.languageId}`);
+        outputChannel.appendLine(`- Scheme: ${doc.uri.scheme}`);
+        outputChannel.appendLine(`- Language ID: ${doc.languageId}`);
 
         event.contentChanges.forEach((change) => {
           if (change.text && change.text.trim()) {
-            outputChannel.appendLine(`- Content: "${change.text}"`);
-            // Get the full document content after the change
-            const fullContent = doc.getText();
-            outputChannel.appendLine(`- Full Content: "${fullContent}"`);
-            // Try to parse if it's code
-            if (
-              doc.languageId === "javascript" ||
-              doc.languageId === "typescript"
-            ) {
-              try {
-                // Just checking if it's valid JS/TS
-                Function(`return ${fullContent}`);
-                outputChannel.appendLine("- Valid code detected");
-              } catch (error: any) {
-                outputChannel.appendLine(
-                  `- Invalid/incomplete code: ${
-                    error?.message || "Unknown error"
-                  }`
-                );
-              }
+            outputChannel.appendLine(`- Change Text: "${change.text}"`);
+            outputChannel.appendLine(
+              `- Change Range: ${JSON.stringify(change.range)}`
+            );
+
+            // Log the lines around the change for context
+            const startLine = Math.max(0, change.range.start.line - 1);
+            const endLine = Math.min(
+              doc.lineCount - 1,
+              change.range.end.line + 1
+            );
+            outputChannel.appendLine(`- Context:`);
+            for (let i = startLine; i <= endLine; i++) {
+              const line = doc.lineAt(i);
+              outputChannel.appendLine(`  ${i}: ${line.text}`);
             }
           }
+        });
+
+        // Log some of the full content for context
+        const fullContent = doc.getText();
+        const contentPreview =
+          fullContent.length > 500
+            ? fullContent.substring(0, 500) + "..."
+            : fullContent;
+        outputChannel.appendLine(`- Full Content Preview:\n${contentPreview}`);
+      }
+    }),
+
+    // Monitor when documents are opened
+    vscode.workspace.onDidOpenTextDocument((doc) => {
+      if (isAnysphereDocument(doc)) {
+        outputChannel.appendLine(`\n=== Anysphere Document Opened ===`);
+        outputChannel.appendLine(`- URI: ${doc.uri.toString()}`);
+        outputChannel.appendLine(`- Scheme: ${doc.uri.scheme}`);
+        outputChannel.appendLine(`- Language ID: ${doc.languageId}`);
+        const content = doc.getText();
+        const contentPreview =
+          content.length > 500 ? content.substring(0, 500) + "..." : content;
+        outputChannel.appendLine(`- Initial Content:\n${contentPreview}`);
+      }
+    }),
+
+    // Monitor active editor changes
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor && isAnysphereDocument(editor.document)) {
+        const doc = editor.document;
+        outputChannel.appendLine(`\n=== Anysphere Document Became Active ===`);
+        outputChannel.appendLine(`- URI: ${doc.uri.toString()}`);
+        outputChannel.appendLine(`- Scheme: ${doc.uri.scheme}`);
+        outputChannel.appendLine(`- Language ID: ${doc.languageId}`);
+
+        // Log visible content
+        const visibleRanges = editor.visibleRanges;
+        outputChannel.appendLine(`- Visible Ranges:`);
+        visibleRanges.forEach((range) => {
+          const visibleContent = doc.getText(range);
+          outputChannel.appendLine(
+            `  Range ${range.start.line}-${range.end.line}:\n${visibleContent}`
+          );
         });
       }
     }),
 
-    // Monitor when composer documents are opened
-    vscode.workspace.onDidOpenTextDocument((doc) => {
-      if (isComposerDocument(doc)) {
-        outputChannel.appendLine(`\n=== Composer Document Opened ===`);
-        outputChannel.appendLine(`- URI: ${doc.uri.toString()}`);
-        outputChannel.appendLine(`- Language: ${doc.languageId}`);
-        outputChannel.appendLine(`- Initial Content: "${doc.getText()}"`);
-      }
-    }),
-
-    // Monitor when composer becomes active
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
-      if (editor && isComposerDocument(editor.document)) {
-        outputChannel.appendLine(`\n=== Composer Became Active ===`);
-        outputChannel.appendLine(`- URI: ${editor.document.uri.toString()}`);
-        outputChannel.appendLine(`- Language: ${editor.document.languageId}`);
-        outputChannel.appendLine(`- Content: "${editor.document.getText()}"`);
-        // Log selection if any
-        const selection = editor.selection;
-        if (!selection.isEmpty) {
-          const selectedText = editor.document.getText(selection);
-          outputChannel.appendLine(`- Selected Text: "${selectedText}"`);
+    // Monitor when editors become visible
+    vscode.window.onDidChangeVisibleTextEditors((editors) => {
+      editors.forEach((editor) => {
+        const doc = editor.document;
+        if (isAnysphereDocument(doc)) {
+          outputChannel.appendLine(
+            `\n=== Anysphere Document Became Visible ===`
+          );
+          outputChannel.appendLine(`- URI: ${doc.uri.toString()}`);
+          outputChannel.appendLine(`- Scheme: ${doc.uri.scheme}`);
+          outputChannel.appendLine(`- Language ID: ${doc.languageId}`);
         }
-      }
+      });
     })
   );
 }
