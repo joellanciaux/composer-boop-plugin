@@ -52,19 +52,22 @@ export function activate(context: vscode.ExtensionContext) {
     // Different commands for different operating systems
     let command = "";
     switch (platform()) {
-      case "darwin":
+      case "darwin": {
         // On macOS, afplay supports volume control (0 to 255)
         const macVolume = Math.floor(config.volume * 255);
         command = `afplay -v ${macVolume / 255} "${soundFilePath}"`;
         break;
+      }
       case "win32":
         command = `powershell -c (New-Object Media.SoundPlayer '${soundFilePath}').PlaySync()`;
         break;
-      default: // Linux
+      default: {
+        // Linux
         // On Linux, paplay supports volume (0 to 65536)
         const linuxVolume = Math.floor(config.volume * 65536);
         command = `paplay --volume=${linuxVolume} "${soundFilePath}" || aplay "${soundFilePath}"`;
         break;
+      }
     }
 
     return new Promise<void>((resolve, reject) => {
