@@ -3,70 +3,59 @@ import * as vscode from "vscode";
 export function activate(context: vscode.ExtensionContext) {
   console.log("Cursor Beep extension is now active");
 
-  vscode.window.showInformationMessage("Cursor Beep extension is now active");
+  // Create an output channel for logging
+  const outputChannel = vscode.window.createOutputChannel(
+    "Cursor Command Monitor"
+  );
+  outputChannel.show();
+  outputChannel.appendLine("Cursor Command Monitor started");
 
-  // Log all available commands
+  // Log all available commands on startup
   vscode.commands.getCommands(true).then((commands) => {
-    console.log(
-      "Available commands:",
-      commands.filter((cmd) => cmd.includes("cursorai"))
-    );
-    console.log("^^^^^", commands.length);
+    const cursorCommands = commands.filter((cmd) => cmd.includes("cursorai"));
+    outputChannel.appendLine("Available Cursor commands:");
+    cursorCommands.forEach((cmd) => outputChannel.appendLine(`- ${cmd}`));
+    outputChannel.appendLine(`Total commands: ${commands.length}`);
   });
 
-  // Register a command to try to accept changes
-  let acceptCommand = vscode.commands.registerCommand(
-    "cursor-beep.accept",
-    async () => {
-      try {
-        // Try different possible command IDs that Cursor might use
-        const possibleCommands = [
-          "cursor.acceptChanges",
-          "cursor.accept",
-          "cursorAccept",
-          "acceptChanges",
-        ];
+  // Monitor all command executions
+  const commandListener = vscode.commands.registerCommand(
+    "*",
+    async (command: string, ...args: any[]) => {
+      console.log("Command executed:", command);
+      if (command.includes("cursorai")) {
+        const info = {
+          timestamp: new Date().toISOString(),
+          command,
+          args: args.length ? JSON.stringify(args) : "none",
+          activeFile:
+            vscode.window.activeTextEditor?.document.fileName || "none",
+        };
 
-        for (const cmd of possibleCommands) {
-          try {
-            await vscode.commands.executeCommand(cmd);
-            console.log(`Successfully executed command: ${cmd}`);
-          } catch (e) {
-            console.log(`Failed to execute command: ${cmd}`, e);
-          }
-        }
-      } catch (error) {
-        console.error("Error executing accept command:", error);
-      }
-    }
-  );
-
-  // Watch for command execution
-  let cmdListener = vscode.commands.registerCommand("*", (command) => {
-    if (command.includes("cursor") || command.includes("accept")) {
-      console.log("Intercepted command:", command);
-    }
-  });
-
-  // Original interact command
-  let interactCommand = vscode.commands.registerCommand(
-    "cursor-beep.interact",
-    () => {
-      const editor = vscode.window.activeTextEditor;
-      if (editor) {
-        const position = editor.selection.active;
-        const line = editor.document.lineAt(position.line);
-        vscode.window.showInformationMessage(`Current line: ${line.text}`);
-        editor.edit((editBuilder) => {
-          editBuilder.insert(position, "🎵");
+        outputChannel.appendLine(`\nCommand Executed:`);
+        Object.entries(info).forEach(([key, value]) => {
+          outputChannel.appendLine(`${key}: ${value}`);
         });
-      } else {
-        vscode.window.showWarningMessage("No active text editor found");
+      }
+      return undefined;
+    }
+  );
+
+  // Monitor text changes in the editor
+  const textChangeListener = vscode.workspace.onDidChangeTextDocument(
+    (event) => {
+      const doc = event.document;
+      console.log("Text changed in:", doc.fileName);
+      if (doc.fileName.includes("Cursor") || doc.uri.scheme === "output") {
+        outputChannel.appendLine(`\nText changed in: ${doc.fileName}`);
+        event.contentChanges.forEach((change) => {
+          outputChannel.appendLine(`Change: "${change.text}"`);
+        });
       }
     }
   );
 
-  context.subscriptions.push(acceptCommand, cmdListener, interactCommand);
+  context.subscriptions.push(commandListener, textChangeListener);
 }
 
 export function deactivate() {}
