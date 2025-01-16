@@ -26,9 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
     const config = vscode.workspace.getConfiguration("composerBeep");
     return {
       enabled: config.get<boolean>("enabled", true),
-      delayMs: config.get<number>("delayMs", 1000),
+      delayMs: config.get<number>("delayMs", 3000),
       soundFile: config.get<string>("soundFile", "notification-bloop.wav"),
-      volume: config.get<number>("volume", 1.0),
+      volume: config.get<number>("volume", 0.5),
     };
   }
 
