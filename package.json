@@ -2,7 +2,7 @@
   "name": "composer-boop",
   "displayName": "Composer Boop",
   "description": "VS Code extension to add feedback to Cursor composer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "outrageouslyfrench",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -46,7 +46,7 @@
           "default": "notification-bloop.wav",
           "enum": [
             "notification-bloop.wav",
-            "notification-ding.wav",
+            "notification-click.wav",
             "notification-pop.wav"
           ],
           "description": "Sound file to play (from the included sounds)"
