@@ -90,6 +90,7 @@
   "files": [
     "out/**/*",
     "media/**/*",
-    "booplogo-sm.png"
+    "booplogo-sm.png",
+    "LICENSE.md"
   ]
 }
