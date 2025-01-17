@@ -3,7 +3,7 @@
   "displayName": "Composer Boop",
   "description": "VS Code extension to add feedback to Cursor composer",
   "version": "0.0.1",
-  "publisher": "joellanciaux",
+  "publisher": "outrageouslyfrench",
   "license": "MIT",
   "icon": "booplogo-sm.png",
   "author": {
@@ -89,6 +89,7 @@
   },
   "files": [
     "out/**/*",
-    "media/**/*"
+    "media/**/*",
+    "booplogo-sm.png"
   ]
 }
