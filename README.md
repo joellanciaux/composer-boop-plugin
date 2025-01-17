@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="booplogo-sm.png" alt="Composer Boop Logo" width="128" height="128">
+  <img src="media/icon.png" alt="Composer Boop Logo" width="128" height="128">
 </div>
 
 # Composer Boop
