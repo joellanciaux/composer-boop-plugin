@@ -41,6 +41,7 @@ This extension can be configured through VS Code settings:
 - `composerBoop.soundFile`: Choose the notification sound:
   - notification-bloop.wav
   - notification-click.wav
+  - notification-jobs-done.wav
   - notification-pop.wav
 - `composerBoop.volume`: Adjust sound volume from 0.0 to 1.0 (default: 1.0)
 
@@ -48,7 +49,7 @@ This extension can be configured through VS Code settings:
 
 1. Open Cursor
 2. Start typing in the composer window
-3. When you stop typing, you'll hear a notification sound after the configured delay
+3. When you Cursor is ready for you to accept a change, you'll hear a notification sound after the configured delay
 
 ## Requirements
 
