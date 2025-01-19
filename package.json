@@ -47,6 +47,7 @@
           "enum": [
             "notification-bloop.wav",
             "notification-click.wav",
+            "notification-jobs-done.wav",
             "notification-pop.wav"
           ],
           "description": "Sound file to play (from the included sounds)"
