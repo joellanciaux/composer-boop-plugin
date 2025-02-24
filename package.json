@@ -82,7 +82,7 @@
     "@types/node": "^22.10.7",
     "@types/vscode": "^1.93.0",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
+    "@typescript-eslint/parser": "^8.24.1",
     "@vscode/vsce": "^3.2.1",
     "eslint": "^9.18.0",
     "globals": "^15.14.0",
