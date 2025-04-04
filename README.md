@@ -3,7 +3,7 @@
 </div>
 
 # 🚫 Deprecated!
-Cursor added `Cursor Boop`'s original functionality natively + changed some of the tech I was using to detect composer completions. Rather than fix this add-on, you should just use the new Cursor setting.
+Cursor added `Composer Boop`'s original functionality natively + changed some of the tech I was using to detect composer completions. Rather than fix this add-on, you should just use the new Cursor setting.
 
 <img src="media/CursorSetting.png" alt="Composer Boop Logo" >
 
