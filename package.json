@@ -2,7 +2,7 @@
   "name": "composer-boop",
   "displayName": "Composer Boop",
   "description": "VS Code extension to add feedback to Cursor composer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "outrageouslyfrench",
   "license": "MIT",
   "icon": "media/icon.png",
