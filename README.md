@@ -2,6 +2,14 @@
   <img src="media/icon.png" alt="Composer Boop Logo" width="128" height="128">
 </div>
 
+# 🚫 Deprecated!
+Cursor added the that Cursor Boop was created for natively + changed some of the tech I was using to detect composer completions. Rather than fix this add-on, you should just use the new Cursor setting.
+
+<img src="media/CursorSetting.png" alt="Composer Boop Logo" >
+
+Just enable the the "Play Sound on Finish" option and you'll get your boop when composer is ready.
+
+
 # Composer Boop
 
 A VS Code extension that plays a sound notification when you stop typing in Cursor's composer window.
